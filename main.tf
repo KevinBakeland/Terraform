@@ -17,4 +17,5 @@ resource "proxmox_virtual_environment_vm" "debian_vm" {
   }
 
   started = true
+
 }

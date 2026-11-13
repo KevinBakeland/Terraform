@@ -1,6 +1,7 @@
 resource "proxmox_virtual_environment_vm" "debian_vm" {
   name      = "debian-vm-1"
   node_name = "proxmoxcloud"
+  vm_id     = 67
 
   # Koppel het ISO-bestand dat je hebt geüpload naar de 'local' opslag
   cdrom {

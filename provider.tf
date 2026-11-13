@@ -8,6 +8,6 @@ terraform {
 }
 
 provider "proxmox" {
-  # De provider haalt de inloggegevens automatisch op 
-  # via de Environment Variables ingesteld in HCP Terraform.
+  # Haalt automatisch de variabelen op uit HCP Terraform
+  insecure = true
 }

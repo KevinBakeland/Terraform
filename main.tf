@@ -2,13 +2,13 @@ resource "proxmox_virtual_environment_vm" "debian_vm" {
   name      = "debian-vm-1"
   node_name = "proxmoxcloud"
 
-  cdrom {
-    file_id = "local:iso/debian-12.8.0-amd64-netinst.iso"
+  clone {
+    vm_id = 102
+    full  = true
   }
 
   disk {
     datastore_id = "local-lvm"
-    size         = 20
     interface    = "scsi0"
     file_format  = "raw"
   }

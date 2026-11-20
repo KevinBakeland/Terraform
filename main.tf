@@ -54,3 +54,4 @@ resource "proxmox_virtual_environment_vm" "debian12_vm" {
     type = "l26"
   }
 }
+

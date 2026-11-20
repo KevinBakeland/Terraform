@@ -1,43 +1,41 @@
 resource "proxmox_virtual_environment_vm" "debian12_vm" {
+  name      = "debian12-vm"
   node_name = "proxmoxcloud"
-  vm_id     = 100
-  name      = debian12-vm"
-
-  clone {
-    vm_id = 102
-    full  = true
-  }
+  vm_id     = 110
 
   agent {
-    enabled = true
+    enabled = false
   }
 
   cpu {
     cores = 2
-    type  = "x86-64-v2-AES"
   }
 
   memory {
     dedicated = 2048
   }
 
+  # De Debian ISO als virtuele cd
+  cdrom {
+    file_id   = "local:iso/debian-12.8.0-amd64-netinst.iso"
+    interface = "ide3"
+  }
+
+  # Lege disk waar Debian op geïnstalleerd wordt
   disk {
     datastore_id = "local-lvm"
     interface    = "scsi0"
     size         = 20
-    file_format  = "raw"
   }
 
   network_device {
     bridge = "vmbr0"
-    model  = "virtio"
   }
-}
 
-output "vm_id" {
-  value = proxmox_virtual_environment_vm.debian12_vm.vm_id
-}
+  # Lege disk eerst, daarna de ISO
+  boot_order = ["scsi0", "ide3"]
 
-output "vm_name" {
-  value = proxmox_virtual_environment_vm.debian12_vm.name
+  operating_system {
+    type = "l26"
+  }
 }

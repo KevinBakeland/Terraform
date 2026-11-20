@@ -26,6 +26,7 @@ resource "proxmox_virtual_environment_vm" "debian12_vm" {
     datastore_id = "local-lvm"
     interface    = "scsi0"
     size         = 20
+    file_format  = "raw"
   }
 
   network_device {

@@ -1,7 +1,7 @@
 resource "proxmox_virtual_environment_vm" "debian12_vm" {
   node_name = "proxmoxcloud"
   vm_id     = 100
-  name      = var.vm_name
+  name      = debian12-vm"
 
   clone {
     vm_id = 102

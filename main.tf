@@ -1,26 +1,34 @@
-resource "proxmox_virtual_environment_download_file" "debian12_image" {
-  node_name    = "proxmoxcloud"
-  datastore_id = "local"
-  content_type = "import"
-  file_name    = "debian-12-genericcloud-amd64.qcow2"
-  url          = "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2"
+# Zorgt dat de bestaande VM 110 behouden blijft in de nieuwe opzet
+moved {
+  from = proxmox_virtual_environment_vm.debian12_vm
+  to   = proxmox_virtual_environment_vm.vm["debian12-vm"]
 }
 
-resource "proxmox_virtual_environment_vm" "debian12_vm" {
-  name      = "debian12-vm"
+locals {
+  # Een VM erbij? Voeg gewoon een regel toe. Elk id moet uniek zijn.
+  vms = {
+    "debian12-vm"   = { id = 110, cores = 2, memory = 2048 }
+    "debian12-vm-2" = { id = 111, cores = 2, memory = 2048 }
+  }
+}
+
+resource "proxmox_virtual_environment_vm" "vm" {
+  for_each = local.vms
+
+  name      = each.key
   node_name = "proxmoxcloud"
-  vm_id     = 110
+  vm_id     = each.value.id
 
   agent {
     enabled = false
   }
 
   cpu {
-    cores = 2
+    cores = each.value.cores
   }
 
   memory {
-    dedicated = 2048
+    dedicated = each.value.memory
   }
 
   disk {
@@ -28,7 +36,7 @@ resource "proxmox_virtual_environment_vm" "debian12_vm" {
     interface    = "scsi0"
     size         = 20
     file_format  = "raw"
-    import_from  = proxmox_virtual_environment_download_file.debian12_image.id
+    import_from  = "local:import/debian-12-genericcloud-amd64.qcow2"
   }
 
   network_device {
@@ -54,4 +62,3 @@ resource "proxmox_virtual_environment_vm" "debian12_vm" {
     type = "l26"
   }
 }
-

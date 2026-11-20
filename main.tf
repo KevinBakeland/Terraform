@@ -48,7 +48,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
     datastore_id = "local-lvm"
 
     user_account {
-      username = "debian"
+      username = "student"
       password = var.vm_password
     }
 

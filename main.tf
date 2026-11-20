@@ -34,7 +34,7 @@ resource "proxmox_virtual_environment_vm" "debian12_vm" {
   }
 
   # Lege disk eerst, daarna de ISO
-  boot_order = ["scsi0", "ide3"]
+  boot_order = ["ide3", "scsi0"]
 
   operating_system {
     type = "l26"

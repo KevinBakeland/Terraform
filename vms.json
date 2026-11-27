@@ -1,4 +1,3 @@
-
 {
   "debian12-vm": {
     "id": 110,
@@ -17,6 +16,17 @@
     "cores": 2,
     "memory": 2048,
     "disk": 20,
+    "storage": "local-lvm",
+    "bridge": "vmbr0",
+    "image": "local:import/debian-12-genericcloud-amd64.qcow2",
+    "agent": false
+  },
+  "debian12-vm-3": {
+    "id": 104,
+    "node": "proxmoxcloud",
+    "cores": 2,
+    "memory": 2048,
+    "disk": 10,
     "storage": "local-lvm",
     "bridge": "vmbr0",
     "image": "local:import/debian-12-genericcloud-amd64.qcow2",

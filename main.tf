@@ -1,29 +1,26 @@
-# Zorgt dat de bestaande VM 110 behouden blijft in de nieuwe opzet
+
+# Behoudt de bestaande VM in de Terraform-state
 moved {
   from = proxmox_virtual_environment_vm.debian12_vm
   to   = proxmox_virtual_environment_vm.vm["debian12-vm"]
 }
 
 locals {
-  # Een VM erbij? Voeg gewoon een regel toe. Elk id moet uniek zijn.
-  vms = {
-    "debian12-vm"   = { id = 110, cores = 2, memory = 2048 }
-    "debian12-vm-2" = { id = 111, cores = 2, memory = 2048 }
-  }
+  vms = jsondecode(file("${path.module}/vms.json"))
 }
 
 resource "proxmox_virtual_environment_vm" "vm" {
   for_each = local.vms
 
   name      = each.key
-  node_name = "proxmoxcloud"
+  node_name = each.value.node
   vm_id     = each.value.id
 
   agent {
-    enabled = false
+    enabled = each.value.agent
   }
 
-    cpu {
+  cpu {
     cores = each.value.cores
     type  = "host"
   }
@@ -33,19 +30,19 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   disk {
-    datastore_id = "local-lvm"
+    datastore_id = each.value.storage
     interface    = "scsi0"
-    size         = 20
+    size         = each.value.disk
     file_format  = "raw"
-    import_from  = "local:import/debian-12-genericcloud-amd64.qcow2"
+    import_from  = each.value.image
   }
 
   network_device {
-    bridge = "vmbr0"
+    bridge = each.value.bridge
   }
 
   initialization {
-    datastore_id = "local-lvm"
+    datastore_id = each.value.storage
 
     user_account {
       username = "student"
@@ -63,3 +60,4 @@ resource "proxmox_virtual_environment_vm" "vm" {
     type = "l26"
   }
 }
+
